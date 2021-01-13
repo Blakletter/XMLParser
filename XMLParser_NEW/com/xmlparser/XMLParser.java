@@ -10,12 +10,16 @@ public class XMLParser  {
     private Node currentNode;
     private String filepath;
     private BufferedReader in;
+    private boolean xmlfileLoaded=false;
 
     public void addConfigurationNode(Node node) {
         extras.add(node);
     }
 
     public String toXML(Node node) {
+        if (node==null) {
+            return "";
+        };
         String _extras = "";
         for (int i=0; i<extras.size(); i++) {
             _extras += extras.get(i).toXML();
@@ -41,6 +45,7 @@ public class XMLParser  {
         File file = new File(filepath);
         try {
             in = new BufferedReader(new FileReader(file));  //Create the BufferedReader;
+            xmlfileLoaded = true;
         } catch (Exception e) {
             e.printStackTrace();    //Catch the error and print it out;
         }
@@ -167,7 +172,7 @@ public class XMLParser  {
 
     public Node parseXML() {
         if (xmlString.equals("")) {
-            if (filepath.equals("")) {
+            if (filepath.equals("") && xmlfileLoaded) {
                 System.out.println("Please load XML file first by calling 'class'.LoadXML(Filename)");
                 return null;
             }
