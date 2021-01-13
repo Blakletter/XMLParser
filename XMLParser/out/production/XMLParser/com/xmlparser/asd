@@ -1,0 +1,106 @@
+
+    public void parseAttribute(String attribute) {
+        int pivot = attribute.indexOf('=');
+        String attributeName = attribute.substring(0, pivot);
+        String attributeData = attribute.substring(pivot+1).replace("\"", "").replace("\'", "");;
+        tempAttributes.put(attributeName, attributeData);
+    }
+
+    public void parseAttributes(String attributes) {
+        while (attributes.length()>0) {
+            int equals = attributes.indexOf("=");
+            if (equals<1) {
+                System.out.println("Bad attribute found: ("+attributes+")");
+                return; //Bad tag, it isn't xml. Just disregard the attributes
+            }
+            int firstQuote = attributes.indexOf("\"");
+            int secondQuote = attributes.indexOf("\"", firstQuote+1);
+            if (firstQuote==-1 || secondQuote==-1) {
+                firstQuote = attributes.indexOf("\'");
+                secondQuote = attributes.indexOf("\'", firstQuote+1);
+            }
+            if (firstQuote==-1||secondQuote==-1) {
+                System.out.println("Bad attribute found: ("+attributes+")");
+                return; //Bad tag, it isn't xml. Just disregard the attributes
+            }
+
+            parseAttribute(attributes.substring(0, secondQuote+1).trim());
+            attributes = attributes.substring(secondQuote+1);
+        }
+    }
+
+    public void parseTag(String tag) {
+        //Always a starting tag
+        String tagName;
+        int space = tag.indexOf(' ');
+        if (space<1) space = tag.length()-1;
+        tagName  = tag.substring(1, space);
+        String endTag = tag.substring(space, tag.length()-1).trim();
+        if (endTag.length() > 0) {
+            //Get the attributes here
+            parseAttributes(endTag.trim());
+        }
+
+        //Now that we have our attributes populated in tempAttributes, we create a new node
+        Node node = new Node(tagName).setParent(currentNode).addAttribute(tempAttributes);
+        currentNode.addChild(node);
+        currentNode = node;
+    }
+
+    public void parseBlock(String block) {
+        //First check to see if it
+        //If it is a tag or it is data
+        if (block.contains("<") || block.contains(">")) {
+            char tagStart = block.charAt(1);
+            //Check if it is an end tag
+            if (tagStart=='/') {
+                currentNode = currentNode.getParent();
+            } else {
+                if (!(tagStart=='?'||tagStart=='!')) {
+                    parseTag(block);
+                } else {
+                    System.out.println("Disregarding tag " + block);
+                }
+            }
+        } else {
+            currentNode.setData(block);
+        }
+    }
+
+    public void parseLine(String line) {
+        int tag;
+        while (line.length()!=0) {
+            //Get the end of the next chunk
+            int startTag = line.indexOf('<');
+            int endTag = line.indexOf('>')+1;
+            if (endTag<1) endTag=line.length();
+            if (startTag<1) startTag=line.length();
+            tag = Math.min(endTag, startTag); //whichever comes first, if none, the end of the line
+            parseBlock(line.substring(0, tag));
+
+            line = line.substring(tag);
+        }
+    }
+
+    public void parse() {
+        //at the start, currentNode is our main node
+        //read until xmlString is null
+        xmlString = readNextLine();
+        while (xmlString != null) {
+            parseLine(xmlString);
+            xmlString = readNextLine();
+        }
+    }
+
+    //Starts the whole parsing engine off, setting certain variables and other stuff
+    public Node parseXML() {
+        if (xmlString.equals("")) {
+            if (filepath.equals("")) {
+                System.out.println("Please load XML file first by calling 'class'.LoadXML(Filename)");
+                return null;
+            }
+        }
+        parse();
+        return mainNode;
+    }
+}
