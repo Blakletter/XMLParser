@@ -38,8 +38,9 @@ public class XMLParser  {
          */
     public void loadXMLFile(String filepath) {
         this.filepath = filepath;   //Set the filepath name;
+        File file = new File(filepath);
         try {
-            in = new BufferedReader(new FileReader(filepath));  //Create the BufferedReader;
+            in = new BufferedReader(new FileReader(file));  //Create the BufferedReader;
         } catch (Exception e) {
             e.printStackTrace();    //Catch the error and print it out;
         }
