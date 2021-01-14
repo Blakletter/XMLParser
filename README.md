@@ -7,7 +7,7 @@ This library was created for fun, as a challenge, and because there are always b
 
 ### Getting started
 
-Clone the repo and run the main method in Main.java.
+Clone the repo and import XMLParser.java and Node.java into your project
 
 Usages:
 
