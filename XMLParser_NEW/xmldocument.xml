@@ -4,7 +4,6 @@
   <importoptions>
     <au2pr att='hey'>TRUE</au2pr>
   </importoptions>
-<nulltag/>
   <project>
     <name name="whapoosh Audio" id="Whapposh">whapoosh Audio</name>
     <children>

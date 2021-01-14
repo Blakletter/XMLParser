@@ -1,25 +1,51 @@
 package com.xmlparser;
+import java.lang.reflect.Array;
 import java.util.*;
 
 public class Node {
+    private int level=1;
     private byte[] data = null;
     private Node parent = null;
-    private byte[] id;
+    private byte[] name;
     private List<Node> children = new ArrayList<>();
     private Hashtable<String, String> attributes = null;
     private int child = 0;
 
-    public Node(String id) {
-        this.id = id.getBytes();
+    public Node(String name) {
+        this.name = name.getBytes();
     }
 
+    public Node navigateInside() {
+        if (!children.isEmpty()) return children.get(0);
+        return null;
+    }
+    public Node navigateInside(int index) {
+        if (!children.isEmpty() && children.size()>index) return children.get(index);
+        return null;
+    }
+
+    public boolean hasChildren() {
+        return children.isEmpty();
+    }
+    public void clearChildren() {
+        this.children.clear();
+    }
+
+    public int getLevel() {
+        return level;
+    }
+    public Node setLevel(int level) {
+        this.level = level;
+        return this;
+    }
+    public List<Node> getChildren() {
+        return children;
+    }
     public String toXML() {
-        char configurationChar = getID().charAt(0);
-        boolean isConfiguration = (configurationChar=='?'||configurationChar=='!');
-
-
         String response = "";
         String _attributes = "";
+
+        //Go through the attributes
         if (attributes!=null) {
             // get keys() from Hashtable and iterate
             Enumeration<String> enumeration = attributes.keys();
@@ -30,13 +56,12 @@ public class Node {
             }
             _attributes = _attributes.trim();
         }
-        response+=  "\n<"+getID();
+        response+=  "\n<"+ getName();
         response+=  (!_attributes.equals("")?" "+_attributes:"");
-        if (isConfiguration) return response+configurationChar+">";
 
         boolean isNullTag = (children.isEmpty() && getData()==null);
         if (isNullTag) {
-            return response + "\\>";
+            return response + "/>";
         }
         response+=">";
         if (children.size() > 0) {
@@ -44,11 +69,10 @@ public class Node {
                 response += children.get(i).toXML().stripTrailing();
             }
         } else {
-            response += "\n" + getData();
+            response += getData();
         }
 
-        response += (isNullTag) ? "" : "\n</"+getID()+">";
-        return response;
+        return response + ((getData()==null)?"\n":"") + "</"+ getName()+">";
     }
 
     public Node addAttribute(HashMap h) {
@@ -56,6 +80,7 @@ public class Node {
         if (!h.isEmpty()) attributes.putAll(h);
         return this;
     }
+
     public Hashtable<String, String> getAttributes() {
         return attributes;
     }
@@ -67,42 +92,54 @@ public class Node {
         return new String(this.data);
     }
 
-    public ArrayList<Node> findNodes(String s) {
-        ArrayList<Node> nodes = new ArrayList<>();
-        if (new String(this.id).equals(s)) {
-            nodes = new ArrayList<>();
-            nodes.add(this);
+    public ArrayList<Node> getNodesWithName(String name) {
+        ArrayList<Node> response = new ArrayList<>();
+        if (name.equals(getName())) {
+            response.add(this);
         }
-        for (int i=0; i<children.size(); i++) {
-            ArrayList<Node> response = children.get(i).findNodes(s);
-            if (response != null) {
-                nodes = (nodes==null) ? new ArrayList<>() : nodes;
-                nodes.addAll(response);
-            }
+        for (Node child: children) {
+            response.addAll(child.getNodesWithName(name));
         }
-        return nodes;
+        return response;
     }
 
-    public Node setData(String data){
-        this.data = data.getBytes();
-        return this;
+    public void setData(String data){
+        if (data==null) {
+            this.data = null;
+            return;
+        }
+        if (children.size()==0) this.data = data.getBytes();
     }
 
-    public String getID() {
-        return new String(id);
+    public String getName() {
+        return new String(name);
     }
+
+    public void setName(String name) {
+        this.name = name.getBytes();
+    }
+
+    public ArrayList<Node> getAllChildrenWithAttribute(String key, String value) {
+        ArrayList<Node> response = new ArrayList<>();
+        String myAttribute = attributes.get(key);
+        if (myAttribute!=null && myAttribute.equals(value)) {
+            response.add(this);
+        }
+        for (Node child:children) {
+            response.addAll(child.getAllChildrenWithAttribute(key, value));
+        }
+        return response;
+    };
 
     public Node getParent() {
         return parent;
     }
 
-    public Node setParent(Node parent) {
-        this.parent = parent;
-        return this;
-    }
 
-    public Node addChild(Node node) {
-        children.add(node);
+    public Node setParent(Node parent) {
+        parent.setData(null);
+        parent.children.add(this);
+        this.parent = parent;
         return this;
     }
 
@@ -111,7 +148,7 @@ public class Node {
         return "Node{" +
                 "data='" + data + '\'' +
                 ", parent=" + parent +
-                ", id='" + id + '\'' +
+                ", id='" + name + '\'' +
                 ", children=" + children +
                 ", child=" + child +
                 '}';
