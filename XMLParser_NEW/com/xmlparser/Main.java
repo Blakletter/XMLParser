@@ -11,7 +11,7 @@ public class Main {
         Thread thread = new Thread(() -> {
             //Load in the xml file
             File file = new File("xmldocument.xml").getAbsoluteFile();
-            XMLParser tree = new XMLParser().loadXmlFile(file).setVerbose(false);
+            XMLParser tree = new XMLParser().loadXmlFile(file).setVerbose(true);
             Node root = tree.parseXML();
             tree.clearConfigurationStrings().addConfigurationString("<!DOCTYPE root>");
             System.out.println(tree.toXml(root));

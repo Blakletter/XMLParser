@@ -3,10 +3,10 @@ import java.io.*;
 import java.util.*;
 
 public class XMLParser  {
-    private List<String> extras = new ArrayList<>();
+    private final List<String> extras = new ArrayList<>();
     private boolean verbose = false;
     private String xmlString = "";
-    private Hashtable<String, String> tempAttributes = new Hashtable<>();
+    private final Hashtable<String, String> tempAttributes = new Hashtable<>();
     private Node currentNode;
     private String filepath;
     private BufferedReader in;
@@ -34,7 +34,7 @@ public class XMLParser  {
         for (String s: extras) configuration+=s+"\n";
         if (node==null) {
             return "";
-        };
+        }
         return configuration + node.toXml();
     }
 
@@ -49,7 +49,7 @@ public class XMLParser  {
 
     public int getMaximumDepth() {
         return maxDepth+1;
-    };
+    }
     /*
         Loads in the XML File as a string;
         This just sets the filepath to whatever you want, and creates a BufferedReader that is reusable;
@@ -58,7 +58,7 @@ public class XMLParser  {
     public XMLParser loadXmlFile(File file) {
         this.filepath = file.getPath();   //Set the filepath name;
         try {
-            in = new BufferedReader(new FileReader(file));  //Create the BufferedReader;
+            in = new BufferedReader(new InputStreamReader(new FileInputStream(file)));  //Create the BufferedReader;
             xmlFileLoaded = true;
         } catch (Exception e) {
             e.printStackTrace();    //Catch the error and print it out;
@@ -66,22 +66,33 @@ public class XMLParser  {
         return this;
     }
 
-    private String readNextLine() {
+    private String readFile() {
         try {
-            String line = in.readLine();
-            while (line.equals("")) {
-                line = in.readLine();
+            String line;
+            String response = "";
+            while ((line=in.readLine())!=null) {
+                response+=line;
             }
-            return line.trim();
+            return response;
         } catch (Exception e) {
             return null;
         }
     }
-
+    private String readNextLine() {
+        try {
+            String line;
+            if ((line=in.readLine())!=null) {
+                return line;
+            }
+            return null;
+        } catch (Exception e) {
+            return null;
+        }
+    }
     private void parseAttribute(String attribute) {
         int pivot = attribute.indexOf('=');
         String attributeName = attribute.substring(0, pivot);
-        String attributeData = attribute.substring(pivot+1).replace("\"", "").replace("\'", "");;
+        String attributeData = attribute.substring(pivot+1).replace("\"", "").replace("'", "");
         tempAttributes.put(attributeName, attributeData);
     }
 
@@ -95,8 +106,8 @@ public class XMLParser  {
             int firstQuote = attributes.indexOf("\"");
             int secondQuote = attributes.indexOf("\"", firstQuote+1);
             if (firstQuote==-1 || secondQuote==-1) {
-                firstQuote = attributes.indexOf("\'");
-                secondQuote = attributes.indexOf("\'", firstQuote+1);
+                firstQuote = attributes.indexOf("'");
+                secondQuote = attributes.indexOf("'", firstQuote+1);
             }
             if (firstQuote==-1||secondQuote==-1) {
                 if (verbose) System.out.println("Bad attribute found: ("+attributes+")");
@@ -180,11 +191,12 @@ public class XMLParser  {
     }
 
     private void parse() {
-        xmlString = readNextLine();
-        while (xmlString != null) {
-            parseLine(xmlString);
-            xmlString = readNextLine();
-        }
+        parseLine(readFile());
+        //xmlString = readFile();
+        //while (xmlString != null) {
+        //    parseLine(xmlString);
+        //    xmlString = readNextLine();
+        //}
     }
 
     public Node parseXML() {
@@ -198,7 +210,6 @@ public class XMLParser  {
         parse();
         time = (System.currentTimeMillis()-time);
         if(verbose) System.out.printf("Completed in: %.0f milliseconds (%.3f seconds)\n", time, time*.001);
-
         return currentNode;
     }
 }

@@ -1,131 +1,33 @@
-﻿<?xml version="1.0" encoding="UTF-8" standalone="no" ?>    <!DOCTYPE xmeml>
-
-<xmeml version="5">
-  <importoptions>
-    <au2pr att='hey'>TRUE</au2pr>
-  </importoptions>
-  <project>
-    <name name="whapoosh Audio" id="Whapposh">whapoosh Audio</name>
-    <children>
-      <sequence id="sequence-1">
-        <duration name="58">58</duration>
-        <rate>
-          <timebase>254016000000</timebase>
-          <ntsc>FALSE</ntsc>
-        </rate>
-        <name name="whapoosh Audio">whapoosh Audio</name>
-        <media>
-          <audio>
-            <format>
-              <samplecharacteristics>
-                <depth>32</depth>
-                <samplerate>88200</samplerate>
-              </samplecharacteristics>
-            </format>
-            <outputs>
-              <group>
-                <index>1</index>
-                <numchannels>1</numchannels>
-                <downmix>0</downmix>
-                <channel>
-                  <index>1</index>
-                </channel>
-              </group>
-              <group>
-                <index>2</index>
-                <numchannels>1</numchannels>
-                <downmix>0</downmix>
-                <channel>
-                  <index>2</index>
-                </channel>
-              </group>
-            </outputs>
-            <track>
-              <name name="Track 1">Track 1</name>
-              <enabled>TRUE</enabled>
-              <locked>FALSE</locked>
-              <clipitem id="clipitem-0">
-                <name name="Track 1">Track 1</name>
-                <enabled>TRUE</enabled>
-                <duration>496425600000</duration>
-                <start>0</start>
-                <end>496425600000</end>
-                <in>0</in>
-                <out>496425600000</out>
-                <file id="0">
-                  <name>Track 1.wav</name>
-                  <pathurl>file://localhost/C%3a/Users/Jeremy/Documents/whapoosh%20Audio/Track%201.wav</pathurl>
-                  <rate>
-                    <timebase>254016000000</timebase>
-                    <ntsc>FALSE</ntsc>
-                  </rate>
-                  <duration>496425600000</duration>
-                  <media>
-                    <audio>
-                      <samplecharacteristics>
-                        <depth>32</depth>
-                        <samplerate>88200</samplerate>
-                      </samplecharacteristics>
-                      <channelcount>2</channelcount>
-                    </audio>
-                  </media>
-                </file>
-                <sourcetrack>
-                  <mediatype>audio</mediatype>
-                  <trackindex>1</trackindex>
-                </sourcetrack>
-                <channelcount>2</channelcount>
-              </clipitem>
-              <channelcount>2</channelcount>
-              <outputchannelindex>25</outputchannelindex>
-            </track>
-            <track>
-              <name name="Track 2">Track 2</name>
-              <enabled>TRUE</enabled>
-              <locked>FALSE</locked>
-              <channelcount>2</channelcount>
-              <outputchannelindex>25</outputchannelindex>
-            </track>
-            <track>
-              <name name="Track 3">Track 3</name>
-              <enabled>TRUE</enabled>
-              <locked>FALSE</locked>
-              <channelcount>2</channelcount>
-              <outputchannelindex>25</outputchannelindex>
-            </track>
-            <track>
-              <name name="Track 4">Track 4</name>
-              <enabled>TRUE</enabled>
-              <locked>FALSE</locked>
-              <channelcount>2</channelcount>
-              <outputchannelindex>25</outputchannelindex>
-            </track>
-            <track>
-              <name name="Track 5">Track 5</name>
-              <enabled>TRUE</enabled>
-              <locked>FALSE</locked>
-              <channelcount>2</channelcount>
-              <outputchannelindex>25</outputchannelindex>
-            </track>
-            <track>
-              <name>Track 6</name>
-              <enabled>TRUE</enabled>
-              <locked>FALSE</locked>
-              <channelcount>2</channelcount>
-              <outputchannelindex>25</outputchannelindex>
-            </track>
-          </audio>
-        </media>
-        <timecode>
-          <rate>
-            <timebase>30</timebase>
-            <ntsc>TRUE</ntsc>
-          </rate>
-          <frame>0</frame>
-          <displayformat>NDF</displayformat>
-        </timecode>
-      </sequence>
-    </children>
-  </project>
-
-</xmeml>
+<?xml version="1.0" encoding="UTF-8"?>
+<breakfast_menu>
+  <food>
+    <name>Belgian Waffles</name>
+    <price>$5.95</price>
+    <description>Two of our famous Belgian Waffles with plenty of real maple syrup</description>
+    <calories>650</calories>
+  </food>
+  <food>
+    <name>Strawberry Belgian Waffles</name>
+    <price>$7.95</price>
+    <description>Light Belgian waffles covered with strawberries and whipped cream</description>
+    <calories>900</calories>
+  </food>
+  <food>
+    <name>Berry-Berry Belgian Waffles</name>
+    <price>$8.95</price>
+    <description>Light Belgian waffles covered with an assortment of fresh berries and whipped cream</description>
+    <calories>900</calories>
+  </food>
+  <food>
+    <name>French Toast</name>
+    <price>$4.50</price>
+    <description>Thick slices made from our homemade sourdough bread</description>
+    <calories>600</calories>
+  </food>
+  <food>
+    <name>Homestyle Breakfast</name>
+    <price>$6.95</price>
+    <description>Two eggs, bacon or sausage, toast, and our ever-popular hash browns</description>
+    <calories>950</calories>
+  </food>
+</breakfast_menu>
