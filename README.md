@@ -9,9 +9,7 @@ This library was created for fun, as a challenge, and because there are always b
 
 Clone this repository to a directory of your choosing, or just download it as a zip and extract it.
 
-Next, in the Main.java main method, there is a simple implementation for you already.
-Simply define the absolute path to an xml file and press run. It will take the xml, load it into its structure, and print it back out.
-
+Run the main method in Main.java and you are good to go! Or go ahead and import 
 Methods and returns:
 
 

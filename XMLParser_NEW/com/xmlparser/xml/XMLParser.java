@@ -1,4 +1,4 @@
-package com.xmlparser;
+package com.xmlparser.xml;
 import java.io.*;
 import java.util.*;
 

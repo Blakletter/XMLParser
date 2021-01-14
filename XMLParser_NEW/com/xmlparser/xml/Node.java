@@ -1,5 +1,4 @@
-package com.xmlparser;
-import java.lang.reflect.Array;
+package com.xmlparser.xml;
 import java.util.*;
 
 public class Node {
