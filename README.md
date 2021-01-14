@@ -7,10 +7,8 @@ This library was created for fun, as a challenge, and because there are always b
 
 ### Getting started
 
-Clone this repository to a directory of your choosing, or just download it as a zip and extract it.
+Clone the repo and run the main method in Main.java.
 
-Run the main method in Main.java and you are good to go! Or go ahead and import 
-Methods and returns:
+### *XMLParser methods*
 
 
-### *XMLParser*

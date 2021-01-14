@@ -6,7 +6,7 @@ public class XMLParser  {
     private List<String> extras = new ArrayList<>();
     private boolean verbose = false;
     private String xmlString = "";
-    private HashMap<String, String> tempAttributes = new HashMap<>();
+    private Hashtable<String, String> tempAttributes = new Hashtable<>();
     private Node currentNode;
     private String filepath;
     private BufferedReader in;
@@ -15,28 +15,36 @@ public class XMLParser  {
     private int numberOfNodes = 0;
     private int sumOfNodes = 0;
 
-    public void addConfigurationString(String configurationString)
-    {
+    public void addConfigurationString(String configurationString) {
         extras.add(configurationString);
     }
+
+    public List<String> getConfigurationStrings() {
+        return extras;
+    }
+
     public void clearConfigurationStrings() {
         extras.clear();
     }
+
     public String toXml(Node node) {
         String configuration = "";
         for (String s: extras) configuration+=s+"\n";
         if (node==null) {
             return "";
         };
-        return configuration + node.toXML();
+        return configuration + node.toXml();
     }
+
     public XMLParser setVerbose(boolean verbose) {
         this.verbose = verbose;
         return this;
     }
+
     public int getAverageDepth() {
         return (sumOfNodes+1)/(numberOfNodes+1);
     }
+
     public int getMaximumDepth() {
         return maxDepth+1;
     };
@@ -121,17 +129,17 @@ public class XMLParser  {
         //It is a null tag i.e <tagName/>
         if (isNullTag) {
             //Now that we have our attributes populated in tempAttributes, we create a new node
-            Node node = new Node(tagName.substring(0, tagName.length()-1)).setParent(currentNode).addAttribute(tempAttributes);
+            Node node = new Node(tagName.substring(0, tagName.length()-1)).setParent(currentNode).addAttributes(tempAttributes);
             node.setLevel(currentNode.getLevel()+1);
             return;
         }
         //If it is the root node
         if (currentNode==null) {
-            currentNode= new Node(tagName).addAttribute(tempAttributes);
+            currentNode= new Node(tagName).addAttributes(tempAttributes);
             return;
         }
         //Since we know its not a null tag, is not a configuration tag, lets create a normal tag
-        Node node = new Node(tagName).setParent(currentNode).addAttribute(tempAttributes).setLevel(currentNode.getLevel()+1);
+        Node node = new Node(tagName).setParent(currentNode).addAttributes(tempAttributes).setLevel(currentNode.getLevel()+1);
         if (verbose) System.out.println("Creating link "+currentNode.getName() + " -> " + node.getName());
         currentNode = node;
     }

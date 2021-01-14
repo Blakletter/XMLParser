@@ -8,24 +8,29 @@ public class Node {
     private byte[] name;
     private List<Node> children = new ArrayList<>();
     private Hashtable<String, String> attributes = null;
-    private int child = 0;
 
     public Node(String name) {
         this.name = name.getBytes();
     }
 
-    public Node navigateInside() {
-        if (!children.isEmpty()) return children.get(0);
+    public Node navigateInside(String name) {
+        for (int i = 0; i<children.size(); i++) {
+            if (name.equals(children.get(i).getName())) {
+                return children.get(i);
+            }
+        }
         return null;
     }
+
     public Node navigateInside(int index) {
-        if (!children.isEmpty() && children.size()>index) return children.get(index);
+        if (children.size()>index) return children.get(index);
         return null;
     }
 
     public boolean hasChildren() {
         return children.isEmpty();
     }
+
     public void clearChildren() {
         this.children.clear();
     }
@@ -33,50 +38,32 @@ public class Node {
     public int getLevel() {
         return level;
     }
+
     public Node setLevel(int level) {
         this.level = level;
         return this;
     }
+
     public List<Node> getChildren() {
         return children;
     }
-    public String toXML() {
-        String response = "";
-        String _attributes = "";
 
-        //Go through the attributes
-        if (attributes!=null) {
-            // get keys() from Hashtable and iterate
-            Enumeration<String> enumeration = attributes.keys();
-            // iterate using enumeration object
-            while (enumeration.hasMoreElements()) {
-                String key = enumeration.nextElement();
-                _attributes += key + "=" + "\"" + attributes.get(key) + "\" ";
-            }
-            _attributes = _attributes.trim();
+    public String toXml( ) {
+        String response = this.toString();
+        for (Node n : children) {
+            response += n.toXml().stripTrailing();
         }
-        response+=  "\n<"+ getName();
-        response+=  (!_attributes.equals("")?" "+_attributes:"");
-
-        boolean isNullTag = (children.isEmpty() && getData()==null);
-        if (isNullTag) {
-            return response + "/>";
-        }
-        response+=">";
-        if (children.size() > 0) {
-            for (int i = 0; i < children.size(); i++) {
-                response += children.get(i).toXML().stripTrailing();
-            }
-        } else {
-            response += getData();
-        }
-
-        return response + ((getData()==null)?"\n":"") + "</"+ getName()+">";
+        return response;
     }
 
-    public Node addAttribute(HashMap h) {
+    public Node addAttributes(Hashtable table) {
         if (attributes==null) attributes = new Hashtable<>();
-        if (!h.isEmpty()) attributes.putAll(h);
+        if (table!=null && !table.isEmpty()) attributes.putAll(table);
+        return this;
+    }
+    public Node addAttribute(String key, String value) {
+        if (attributes==null) attributes = new Hashtable<>();
+        attributes.put(key, value);
         return this;
     }
 
@@ -142,14 +129,26 @@ public class Node {
         return this;
     }
 
+
     @Override
     public String toString() {
-        return "Node{" +
-                "data='" + data + '\'' +
-                ", parent=" + parent +
-                ", id='" + name + '\'' +
-                ", children=" + children +
-                ", child=" + child +
-                '}';
+        String response = "";
+        String _attributes = "";
+        //The name of the tag
+        response+=  "\n<"+ getName();
+        //Go through the attributes
+        if (attributes!=null) {
+            Enumeration<String> enumeration = attributes.keys();
+            while (enumeration.hasMoreElements()) {
+                String key = enumeration.nextElement();
+                _attributes += key + "=" + "\"" + attributes.get(key)+ "\" ";
+            }
+        }
+        response +=  (!_attributes.equals("")?" "+_attributes.trim():"");
+        boolean isNullTag = (children.isEmpty() && getData()==null);
+        if (isNullTag) return response + "/>";
+        response+=">";
+        if (children.size() == 0) response += getData();
+        return response + ((getData()==null)?"\n":"") + "</"+ getName()+">";
     }
 }
