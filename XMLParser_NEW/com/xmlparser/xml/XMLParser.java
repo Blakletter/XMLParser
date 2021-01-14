@@ -15,16 +15,18 @@ public class XMLParser  {
     private int numberOfNodes = 0;
     private int sumOfNodes = 0;
 
-    public void addConfigurationString(String configurationString) {
+    public XMLParser addConfigurationString(String configurationString) {
         extras.add(configurationString);
+        return this;
     }
 
     public List<String> getConfigurationStrings() {
         return extras;
     }
 
-    public void clearConfigurationStrings() {
+    public XMLParser  clearConfigurationStrings() {
         extras.clear();
+        return this;
     }
 
     public String toXml(Node node) {
@@ -53,9 +55,8 @@ public class XMLParser  {
         This just sets the filepath to whatever you want, and creates a BufferedReader that is reusable;
         This saves on time every time we need to read in a line;
          */
-    public XMLParser loadXMLFile(String filepath) {
-        this.filepath = filepath;   //Set the filepath name;
-        File file = new File(filepath).getAbsoluteFile();
+    public XMLParser loadXmlFile(File file) {
+        this.filepath = file.getPath();   //Set the filepath name;
         try {
             in = new BufferedReader(new FileReader(file));  //Create the BufferedReader;
             xmlFileLoaded = true;

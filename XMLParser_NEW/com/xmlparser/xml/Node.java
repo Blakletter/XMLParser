@@ -31,8 +31,9 @@ public class Node {
         return children.isEmpty();
     }
 
-    public void clearChildren() {
+    public Node clearChildren() {
         this.children.clear();
+        return this;
     }
 
     public int getLevel() {
@@ -78,31 +79,33 @@ public class Node {
         return new String(this.data);
     }
 
-    public ArrayList<Node> getNodesWithName(String name) {
+    public ArrayList<Node> getAllWithName(String name) {
         ArrayList<Node> response = new ArrayList<>();
         if (name.equals(getName())) {
             response.add(this);
         }
         for (Node child: children) {
-            response.addAll(child.getNodesWithName(name));
+            response.addAll(child.getAllWithName(name));
         }
         return response;
     }
 
-    public void setData(String data){
+    public Node setData(String data){
         if (data==null) {
             this.data = null;
-            return;
+            return this;
         }
         if (children.size()==0) this.data = data.getBytes();
+        return this;
     }
 
     public String getName() {
         return new String(name);
     }
 
-    public void setName(String name) {
+    public Node setName(String name) {
         this.name = name.getBytes();
+        return this;
     }
 
     public ArrayList<Node> getAllChildrenWithAttribute(String key, String value) {
