@@ -1,8 +1,10 @@
 package com.xmlparser.xml;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 public class Node {
-    private int level=1;
+    private int level=0;
     private byte[] data = null;
     private Node parent = null;
     private byte[] name;
@@ -28,7 +30,7 @@ public class Node {
     }
 
     public boolean hasChildren() {
-        return children.isEmpty();
+        return !children.isEmpty();
     }
 
     public Node clearChildren() {
@@ -45,15 +47,24 @@ public class Node {
         return this;
     }
 
+
     public List<Node> getChildren() {
         return children;
     }
 
-    public String toXml( ) {
-        String response = this.toString();
+    protected String toXml(String tab) {
+        String response = "\n";
+        for (int i=0; i<getLevel(); i++) response+=tab;
+        response += this.toString();
         for (Node n : children) {
-            response += n.toXml().stripTrailing();
+            response += n.toXml(tab).stripTrailing();
         }
+
+        if (getData()==null) {
+            response+="\n";
+            for (int i=0; i<getLevel(); i++) response+=tab;
+        }
+        if (getData()!=null || hasChildren()) response += "</"+getName()+">";
         return response;
     }
 
@@ -72,12 +83,7 @@ public class Node {
         return attributes;
     }
 
-    public String getData() {
-        if (this.data == null) {
-            return null;
-        }
-        return new String(this.data);
-    }
+
 
     public ArrayList<Node> getAllWithName(String name) {
         ArrayList<Node> response = new ArrayList<>();
@@ -89,13 +95,23 @@ public class Node {
         }
         return response;
     }
-
-    public Node setData(String data){
+    public String getData() {
+        if (this.data == null) return null;
+        return new String(this.data);
+    }
+    public Node setData(String data) {
+        if (data==null) return this;
+        this.data = data.getBytes();
+        return this;
+    }
+    public Node addData(String data){
         if (data==null) {
             this.data = null;
             return this;
         }
-        if (children.size()==0) this.data = data.getBytes();
+        if (this.data==null) this.data = data.getBytes();
+
+        else if (children.size()==0) this.data = (getData()+System.lineSeparator()+data).getBytes();
         return this;
     }
 
@@ -126,7 +142,8 @@ public class Node {
 
 
     public Node setParent(Node parent) {
-        parent.setData(null);
+        setLevel(parent.getLevel()+1);
+        parent.addData(null);
         parent.children.add(this);
         this.parent = parent;
         return this;
@@ -138,7 +155,7 @@ public class Node {
         String response = "";
         String _attributes = "";
         //The name of the tag
-        response+=  "\n<"+ getName();
+        response+=  "<"+ getName();
         //Go through the attributes
         if (attributes!=null) {
             Enumeration<String> enumeration = attributes.keys();
@@ -152,6 +169,6 @@ public class Node {
         if (isNullTag) return response + "/>";
         response+=">";
         if (children.size() == 0) response += getData();
-        return response + ((getData()==null)?"\n":"") + "</"+ getName()+">";
+        return response;
     }
 }

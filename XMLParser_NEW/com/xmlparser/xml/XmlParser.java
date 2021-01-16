@@ -2,10 +2,11 @@ package com.xmlparser.xml;
 import java.io.*;
 import java.util.*;
 
-public class XMLParser  {
+public class XmlParser {
     private final List<String> extras = new ArrayList<>();
     private boolean verbose = false;
     private String xmlString = "";
+    private String tab = "  ";
     private final Hashtable<String, String> tempAttributes = new Hashtable<>();
     private Node currentNode;
     private String filepath;
@@ -15,30 +16,46 @@ public class XMLParser  {
     private int numberOfNodes = 0;
     private int sumOfNodes = 0;
 
-    public XMLParser addConfigurationString(String configurationString) {
+    public XmlParser addConfigurationString(String configurationString) {
         extras.add(configurationString);
         return this;
     }
 
+    public void saveToFile(File file, String text) {
+        PrintStream out = null;
+        try  {
+            out = new PrintStream(new FileOutputStream(file));
+            out.print(text);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (out!=null) out.close();
+        }
+    }
     public List<String> getConfigurationStrings() {
         return extras;
     }
 
-    public XMLParser  clearConfigurationStrings() {
+    public XmlParser clearConfigurationStrings() {
         extras.clear();
         return this;
     }
 
-    public String toXml(Node node) {
+    public String toXml() {
         String configuration = "";
         for (String s: extras) configuration+=s+"\n";
-        if (node==null) {
+        if (currentNode==null) {
             return "";
         }
-        return configuration + node.toXml();
+        return configuration + currentNode.toXml(tab);
     }
 
-    public XMLParser setVerbose(boolean verbose) {
+    public XmlParser setTab(String tab) {
+        this.tab = tab;
+        return this;
+    }
+
+    public XmlParser setVerbose(boolean verbose) {
         this.verbose = verbose;
         return this;
     }
@@ -55,7 +72,7 @@ public class XMLParser  {
         This just sets the filepath to whatever you want, and creates a BufferedReader that is reusable;
         This saves on time every time we need to read in a line;
          */
-    public XMLParser loadXmlFile(File file) {
+    public XmlParser loadXmlFile(File file) {
         this.filepath = file.getPath();   //Set the filepath name;
         try {
             in = new BufferedReader(new InputStreamReader(new FileInputStream(file)));  //Create the BufferedReader;
@@ -142,7 +159,6 @@ public class XMLParser  {
         if (isNullTag) {
             //Now that we have our attributes populated in tempAttributes, we create a new node
             Node node = new Node(tagName.substring(0, tagName.length()-1)).setParent(currentNode).addAttributes(tempAttributes);
-            node.setLevel(currentNode.getLevel()+1);
             return;
         }
         //If it is the root node
@@ -173,7 +189,7 @@ public class XMLParser  {
                 }
             }
         } else {
-            if (currentNode!=null && currentNode.getChildren().size()==0) currentNode.setData(block);
+            if (currentNode!=null && currentNode.getChildren().size()==0) currentNode.addData(block);
         }
     }
 
@@ -191,15 +207,15 @@ public class XMLParser  {
     }
 
     private void parse() {
-        parseLine(readFile());
-        //xmlString = readFile();
-        //while (xmlString != null) {
-        //    parseLine(xmlString);
-        //    xmlString = readNextLine();
-        //}
+        //parseLine(readFile());
+        xmlString = readFile();
+        while (xmlString != null) {
+            parseLine(xmlString);
+            xmlString = readNextLine();
+        }
     }
 
-    public Node parseXML() {
+    public Node parseXml() {
         if (xmlString.equals("")) {
             if (filepath.equals("") && xmlFileLoaded) {
                 System.out.println("Please load XML file first by calling 'class'.LoadXML(Filename)");
