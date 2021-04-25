@@ -10,10 +10,15 @@ public class Main {
             //Load in the xml file
             File file = new File("xmldocument.xml").getAbsoluteFile();
             XmlParser tree = new XmlParser().loadXmlFile(file).setVerbose(false);
+
+
             Node root = tree.parseXml();
+
             ArrayList<Node> foods = root.getAllWithName("food");
+
+
             for (Node food : foods) {
-                new Node("popularity").setData("75%").setParent(food);
+                new Node("thisisatest").setData("75%").setParent(food);
                 new Node("style").setData("modern").setParent(food);
                 new Node("interest").setData("moderate").setParent(food);
             }

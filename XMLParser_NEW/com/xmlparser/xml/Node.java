@@ -42,7 +42,7 @@ public class Node {
         return level;
     }
 
-    public Node setLevel(int level) {
+    protected Node setLevel(int level) {
         this.level = level;
         return this;
     }
@@ -68,7 +68,7 @@ public class Node {
         return response;
     }
 
-    public Node addAttributes(Hashtable table) {
+    protected Node addAttributes(Hashtable table) {
         if (attributes==null) attributes = new Hashtable<>();
         if (table!=null && !table.isEmpty()) attributes.putAll(table);
         return this;
